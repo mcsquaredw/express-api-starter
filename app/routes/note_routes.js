@@ -14,6 +14,36 @@ module.exports = (app, db) => {
     }
   });
 
+  app.delete('/notes/:id', async(req, res) => {
+    const id = req.params.id;
+
+    try {
+      const details = { '_id': new ObjectID(id) } ;
+      const item = await db.collection('notes').remove(details);
+      res.send('Note ' + id + ' deleted');
+    } catch(err) {
+      console.log(err);
+      res.send({ 'error': 'An error has occurred' });
+    }
+  });
+
+  app.put('/notes/:id', async (req, res) => {
+    const id = req.params.id;
+    const note = {
+      title: req.body.title,
+      body: req.body.body
+    };
+
+    try {
+      const details = { '_id': new ObjectID(id) };
+      const item = await db.collection('notes').update(details, note);
+      res.send(item);
+    } catch (err) {
+      console.log(err);
+      res.send({ 'error': 'An error has occurred' });
+    }
+  });
+
   app.post('/notes', async (req, res) => {
     const note = {
       title: req.body.title,
